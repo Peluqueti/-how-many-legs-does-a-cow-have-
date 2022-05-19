@@ -1,0 +1,125 @@
+probabilidad X y Z.
+library(rio)
+data <- import("ENS_Muestra.xlsx") 
+
+tabla <- table(data$X, data$Y)
+
+
+conjunta <- prop.table(table(data$X, data$Y))
+
+conjunta
+
+(sumar de la tabla)
+
+probabilidad X y Z
+
+sum(conjunta["No",c("< 8 años","8 - 12 años")])
+
+Identifique la distribución marginal de FUMA y entregue sus probabilidades correspondientes.
+(probabilidad SI y NO)
+
+apply(X=conjunta, MARGIN=1, FUN=sum)
+
+rowSums(conjunta)  # Alternativa
+
+Indique la probabilidad de que una persona fume dado que tiene más de 12 años de estudio.
+
+x.y <- prop.table(tabla, margin=2)
+
+x.y["Si","> 12 años"]
+
+conjunta[,2]/sum(conjunta[,2])  # Alternativa
+
+Indique la covarianza entre las variables COLESTEROL e IMC.
+
+cov(data$COLESTEROL, data$IMC)
+
+Indique la correlación entre las variables PAS y EDAD.
+
+cor(data$PAS, data$EDAD)
+
+Ajuste una distribución Normal a la variable COLESTEROL por medio de un gráfico de probabilidad. ¿Qué valor estimado para la media 
+μ
+ se obtuvo?
+N <- nrow(data)
+
+p <- (1:N)/(N+1)
+
+y <- sort(data$COLESTEROL)
+
+x <- qnorm(p)
+
+m <- lm(y ~ x)
+
+m$coefficients[1]
+
+Del ajuste de la pregunta anterior ¿Qué valor se encontró para el parámetro 
+σ
+?
+
+m$coefficients[2]
+
+Ajuste una distribución Log-Normal a la misma variable COLESTEROL por medio de un gráfico de probabilidad. ¿Qué valor se obtuvo para el parámetro 
+λ
+?
+p <- (1:N)/(N+1)
+
+y <- sort(data$COLESTEROL)
+
+x <- qnorm(p)
+
+m <- lm(log(y) ~ x)
+
+m$coefficients[1]
+
+ ¿qué valor se encontró para el parámetro 
+ζ
+?
+
+m$coefficients[2]
+
+Se desea ajustar también a la variable COLESTEROL una distribución Log-Logística de parámetros 
+μ
+ y 
+σ
+, por medio de un gráfico de probabilidad. Esta tiene la siguiente función de densidad, función de distribución y ecuación de percentiles, respectivamente: (ver formulario de clases) ¿Cuál es el valor estimado de 
+μ
+ por medio de este ajuste?
+
+p <- (1:N)/(N+1)
+
+y <- sort(data$COLESTEROL)
+
+x <- log(p / (1-p))
+
+m <- lm(log(y) ~ x)
+
+m$coefficients[1]
+
+¿qué valor se obtuvo para el parámetro 
+σ
+?
+
+m$coefficients[2]
+
+De los tres ajustes obtenidos, obtenga las probabilidades de que el nivel de colesterol sea menor o igual a 200 mg/dL.
+
+Nota: En R, la distribución Logística se reconoce bajo el nombre dlogis, plogis, etc.., con parámetros location = 
+μ
+ y scale = 
+σ
+. La probabilidad asociada a la distribución Log-Logística se puede calcular utilizando plogis(log(x), ... )
+
+Normal: parámetros se llaman mu y sigma
+
+pnorm(200, mean = mu, sd = sigma)
+
+Log-Normal: parámetros se llaman lambda y zeta
+plnorm(200, meanlog = lambda, sdlog = zeta)
+
+Log-Logística: parámetros se llaman mu2 y sigma2
+plogis(log(200), location = mu2, scale = sigma2)
+
+¿Cuál de las tres probabilidades se asemeja más a la proporción muestral de personas con nivel de colesterol de 200 mg/dL o menos?
+
+mean(y <= 200)
